@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>TESTE — Formulário de pré-cadastro Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Meta Pixel (mesmo das LPs) — pra testar o disparo real no Pixel Helper -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
+s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','544750160682227');fbq('track','PageView');
+</script>
+<style>
+  :root{--preto:#0F1313;--vermelho:#B70103;--c500:#6b7173;--c300:#b9bec0;--c100:#eef0f1;--ok:#16a34a;--erro:#c0392b}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',system-ui,sans-serif;color:#16191a;background:#11151a;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .teste-banner{background:#f59e0b;color:#1a1300;font-weight:700;font-size:13px;text-align:center;padding:8px 14px}
+  .demo{min-height:62vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:#fff;text-align:center;padding:40px 20px;
+    background:radial-gradient(120% 120% at 75% 10%,#23292a,#0e1112)}
+  .demo h1{font-family:'Anton';font-size:clamp(30px,7vw,52px);text-transform:uppercase;letter-spacing:.5px}
+  .demo p{color:var(--c300);max-width:30em}
+  .btn{display:inline-block;background:var(--vermelho);color:#fff;font-weight:700;font-size:16px;padding:15px 30px;border:2px solid var(--vermelho);border-radius:10px;cursor:pointer;transition:.15s}
+  .btn:hover{background:#9a0103;border-color:#9a0103}
+  .btn:disabled{opacity:.6;cursor:default}
+
+  /* MODAL */
+  .overlay{position:fixed;inset:0;background:rgba(8,10,11,.7);backdrop-filter:blur(3px);z-index:100;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:32px 16px}
+  .overlay[hidden]{display:none}
+  .modal{background:#fff;width:100%;max-width:540px;border-radius:16px;position:relative;padding:26px 26px 30px;box-shadow:0 24px 70px rgba(0,0,0,.4);animation:pop .2s ease}
+  @keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .x{position:absolute;top:14px;right:16px;width:34px;height:34px;border:none;background:var(--c100);border-radius:50%;font-size:20px;color:#333;cursor:pointer;line-height:1}
+  .m-head .eyebrow{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--vermelho);font-weight:700}
+  .m-head h2{font-family:'Anton';font-size:30px;text-transform:uppercase;margin:6px 0 8px;color:var(--preto)}
+  .m-head .intro{font-size:14px;color:var(--c500);margin-bottom:20px}
+  .fld{margin-bottom:16px}
+  .fld label{display:block;font-size:14px;font-weight:600;margin-bottom:6px;color:#16191a}
+  .fld label .req{color:var(--vermelho)}
+  .fld input[type=text],.fld input[type=email],.fld input[type=tel]{width:100%;font:inherit;font-size:15px;padding:11px 13px;border:1.5px solid #d7dadd;border-radius:9px;background:#fff}
+  .fld input:focus{outline:none;border-color:var(--preto)}
+  .fld input.bad{border-color:var(--erro);background:#fff5f4}
+  .erro-msg{display:none;color:var(--erro);font-size:12.5px;margin-top:5px}
+  .fld.invalid .erro-msg{display:block}
+  .seg{display:flex;gap:8px}
+  .seg label{flex:1;border:1.5px solid #d7dadd;border-radius:9px;padding:10px;text-align:center;cursor:pointer;font-weight:600;font-size:14px;margin:0}
+  .seg input{display:none}
+  .seg input:checked+span{color:#fff}
+  .seg label:has(input:checked){background:var(--preto);border-color:var(--preto);color:#fff}
+  .help{font-size:12.5px;color:var(--c500);background:#f7f8f8;border-radius:8px;padding:10px 12px;margin:6px 0 8px}
+  .help b{color:#16191a}.help ul{margin:4px 0 0 16px}.help li{margin:2px 0}
+  .drop{border:1.5px dashed #c2c7cb;border-radius:10px;padding:18px;text-align:center;cursor:pointer;color:var(--c500);font-size:14px;transition:.15s}
+  .drop:hover,.drop.over{border-color:var(--preto);background:#fafafa;color:#16191a}
+  .files{list-style:none;margin-top:8px;display:flex;flex-direction:column;gap:6px}
+  .files li{display:flex;align-items:center;gap:8px;background:#eef0f1;border-radius:7px;padding:7px 10px;font-size:13px}
+  .files li .nome{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .files li button{border:none;background:none;color:var(--erro);cursor:pointer;font-size:16px}
+  .enviar{width:100%;margin-top:8px;font-size:17px;padding:15px}
+  .nota{font-size:11.5px;color:#9aa0a2;text-align:center;margin-top:12px}
+  /* sucesso */
+  .sucesso{text-align:center;padding:24px 8px}
+  .sucesso .ic{width:64px;height:64px;border-radius:50%;background:var(--ok);color:#fff;font-size:36px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+  .sucesso h2{font-family:'Anton';text-transform:uppercase;color:var(--preto);font-size:26px;margin-bottom:8px}
+  .sucesso p{color:var(--c500);font-size:15px}
+  .debug{margin-top:18px;background:#0f1313;color:#9ff;border-radius:8px;padding:12px;font-family:ui-monospace,monospace;font-size:12px;text-align:left;word-break:break-all}
+  .debug b{color:#7fffa9}
+  @media(max-width:560px){.overlay{padding:0}.modal{max-width:100%;min-height:100%;border-radius:0;padding-top:20px}}
+</style>
+</head>
+<body>
+<div class="teste-banner">⚠️ MODO TESTE — não está plugado nas LPs de produção. O envio é SIMULADO (ainda não cria card no Pipefy). A conversão dispara de verdade no Pixel pra você validar.</div>
+
+<div class="demo">
+  <h1>Bora rodar hoje</h1>
+  <p>Clique no botão pra abrir o formulário de pré-cadastro (igual será nas LPs).</p>
+  <button class="btn" id="abrir">Quero alugar</button>
+</div>
+
+<div class="overlay" id="ov" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+    <button class="x" id="fechar" aria-label="Fechar">×</button>
+
+    <div id="passo-form">
+      <div class="m-head">
+        <span class="eyebrow">Pré-cadastro · Concept</span>
+        <h2 id="mt">Pré Cadastro</h2>
+        <p class="intro">Preencha o formulário abaixo. Após concluído, entraremos em contato em até 24h (dias úteis). Caso sua análise seja aprovada, basta escolher a categoria de sua preferência para fazermos a reserva (a depender da disponibilidade).</p>
+      </div>
+
+      <form id="form" novalidate>
+        <div class="fld" data-fld="nome">
+          <label>Digite seu Nome Completo <span class="req">*</span></label>
+          <input type="text" id="nome" autocomplete="name" placeholder="Seu nome completo">
+          <div class="erro-msg">Informe seu nome completo.</div>
+        </div>
+
+        <div class="fld" data-fld="cpf">
+          <label>CPF <span class="req">*</span></label>
+          <input type="text" id="cpf" inputmode="numeric" placeholder="000.000.000-00" maxlength="14">
+          <div class="erro-msg">Informe um CPF válido.</div>
+        </div>
+
+        <div class="fld" data-fld="whats">
+          <label>Número de WhatsApp <span class="req">*</span></label>
+          <input type="tel" id="whats" inputmode="numeric" placeholder="(99) 99999-9999" maxlength="16">
+          <div class="erro-msg">Informe um WhatsApp válido com DDD.</div>
+        </div>
+
+        <div class="fld" data-fld="email">
+          <label>Email <span class="req">*</span></label>
+          <input type="email" id="email" autocomplete="email" placeholder="voce@email.com">
+          <div class="erro-msg">Informe um e-mail válido.</div>
+        </div>
+
+        <div class="fld" data-fld="indicado">
+          <label>Você foi indicado? <span class="req">*</span></label>
+          <div class="seg">
+            <label><input type="radio" name="indicado" value="Sim"><span>Sim</span></label>
+            <label><input type="radio" name="indicado" value="Não"><span>Não</span></label>
+          </div>
+          <div class="erro-msg">Selecione uma opção.</div>
+        </div>
+
+        <div class="fld" data-fld="cnh">
+          <label>Inclua sua CNH Física ou CNH Digital <span class="req">*</span></label>
+          <div class="help"><b>Condições:</b>
+            <ul><li>Ter pelo menos 21 anos.</li><li>Ter EAR na CNH.</li><li>CNH definitiva e dentro da validade.</li></ul>
+            <div style="margin-top:6px"><b>CNH física:</b> foto legível da CNH ABERTA.<br><b>CNH digital:</b> PDF do documento com QRCODE.</div>
+          </div>
+          <div class="drop" data-drop="cnh">Arraste os arquivos aqui ou clique para enviar</div>
+          <input type="file" id="cnh" accept="image/*,application/pdf" multiple hidden>
+          <ul class="files" data-files="cnh"></ul>
+          <div class="erro-msg">Anexe sua CNH.</div>
+        </div>
+
+        <div class="fld" data-fld="comp">
+          <label>Inclua um Comprovante de Residência <span class="req">*</span></label>
+          <div class="help"><b>Os comprovantes de residência devem:</b>
+            <ul>
+              <li>Estar em seu nome ou comprovar vínculo com o titular (pai, mãe, esposa/marido com certidão de casamento, ou certidão de nascimento de filho etc.).</li>
+              <li>Caso não tenha vínculo com o titular, enviar o contrato de locação com assinaturas autenticadas em cartório ou declaração de residência feita pelo titular com assinatura autenticada em cartório, junto ao comprovante em nome do mesmo.</li>
+              <li>Ter vencimento máximo de 2 meses.</li>
+              <li>Ser conta de água, luz ou correspondência de banco com data de emissão/validade.</li>
+            </ul>
+          </div>
+          <div class="drop" data-drop="comp">Arraste os arquivos aqui ou clique para enviar</div>
+          <input type="file" id="comp" accept="image/*,application/pdf" multiple hidden>
+          <ul class="files" data-files="comp"></ul>
+          <div class="erro-msg">Anexe o comprovante de residência.</div>
+        </div>
+
+        <input type="hidden" id="gclid"><input type="hidden" id="fbclid"><input type="hidden" id="event_id">
+        <button type="submit" class="btn enviar" id="btnEnviar">Enviar</button>
+        <p class="nota">Nunca envie senhas ou dados confidenciais. Este formulário é da Locadora Concept (CNPJ 35.015.925/0001-90).</p>
+      </form>
+    </div>
+
+    <div id="passo-sucesso" class="sucesso" hidden>
+      <div class="ic">✓</div>
+      <h2>Pré-cadastro enviado!</h2>
+      <p>Recebemos seus dados. Entraremos em contato em até 24h úteis pelo WhatsApp ou e-mail. 🚗</p>
+      <div class="debug" id="debug"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var ov=document.getElementById('ov'), form=document.getElementById('form');
+  var arquivos={cnh:[],comp:[]};
+
+  // captura ids de clique (pra dedup/match server-side depois)
+  var qs=new URLSearchParams(location.search);
+  if(qs.get('gclid')) document.getElementById('gclid').value=qs.get('gclid');
+  if(qs.get('fbclid')) document.getElementById('fbclid').value=qs.get('fbclid');
+
+  function abrir(){ov.hidden=false;document.body.style.overflow='hidden';}
+  function fechar(){ov.hidden=true;document.body.style.overflow='';}
+  document.getElementById('abrir').onclick=abrir;
+  document.getElementById('fechar').onclick=fechar;
+  ov.addEventListener('click',function(e){if(e.target===ov)fechar();});
+
+  // máscaras
+  var cpf=document.getElementById('cpf');
+  cpf.oninput=function(){var v=cpf.value.replace(/\D/g,'').slice(0,11);
+    v=v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');cpf.value=v;};
+  var wh=document.getElementById('whats');
+  wh.oninput=function(){var v=wh.value.replace(/\D/g,'').slice(0,11);
+    if(v.length>10)v=v.replace(/(\d{2})(\d{5})(\d{1,4})/,'($1) $2-$3');
+    else if(v.length>6)v=v.replace(/(\d{2})(\d{4})(\d{1,4})/,'($1) $2-$3');
+    else if(v.length>2)v=v.replace(/(\d{2})(\d+)/,'($1) $2');else if(v.length)v=v.replace(/(\d+)/,'($1');
+    wh.value=v;};
+
+  function validaCPF(s){s=s.replace(/\D/g,'');if(s.length!==11||/^(\d)\1+$/.test(s))return false;
+    var t,c,i;for(t=9;t<11;t++){for(c=0,i=0;i<t;i++)c+=parseInt(s[i])*((t+1)-i);c=((c*10)%11)%10;
+    if(c!==parseInt(s[t]))return false;}return true;}
+
+  // uploads
+  ['cnh','comp'].forEach(function(k){
+    var input=document.getElementById(k), drop=document.querySelector('[data-drop="'+k+'"]');
+    drop.onclick=function(){input.click();};
+    input.onchange=function(){add(k,input.files);input.value='';};
+    drop.addEventListener('dragover',function(e){e.preventDefault();drop.classList.add('over');});
+    drop.addEventListener('dragleave',function(){drop.classList.remove('over');});
+    drop.addEventListener('drop',function(e){e.preventDefault();drop.classList.remove('over');add(k,e.dataTransfer.files);});
+  });
+  function add(k,fl){for(var i=0;i<fl.length;i++){var f=fl[i];
+    if(f.size>15*1024*1024){alert('Arquivo "'+f.name+'" maior que 15MB.');continue;}arquivos[k].push(f);}render(k);}
+  function render(k){var ul=document.querySelector('[data-files="'+k+'"]');ul.innerHTML='';
+    arquivos[k].forEach(function(f,idx){var li=document.createElement('li');
+      li.innerHTML='<span class="nome">📎 '+f.name+'</span><span style="color:#9aa0a2">'+(f.size/1024/1024).toFixed(1)+'MB</span><button type="button">×</button>';
+      li.querySelector('button').onclick=function(){arquivos[k].splice(idx,1);render(k);};ul.appendChild(li);});}
+
+  function setErro(fld,on){document.querySelector('[data-fld="'+fld+'"]').classList.toggle('invalid',on);
+    var inp=document.querySelector('[data-fld="'+fld+'"] input');if(inp&&inp.type!=='file'&&inp.type!=='hidden')inp.classList.toggle('bad',on);}
+
+  function valida(){var ok=true;
+    var nome=document.getElementById('nome').value.trim();setErro('nome',!(nome.length>=3&&nome.includes(' ')));if(!(nome.length>=3&&nome.includes(' ')))ok=false;
+    var c=validaCPF(cpf.value);setErro('cpf',!c);if(!c)ok=false;
+    var w=wh.value.replace(/\D/g,'');setErro('whats',!(w.length>=10));if(w.length<10)ok=false;
+    var em=document.getElementById('email').value.trim();var emok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);setErro('email',!emok);if(!emok)ok=false;
+    var ind=form.querySelector('input[name=indicado]:checked');setErro('indicado',!ind);if(!ind)ok=false;
+    setErro('cnh',arquivos.cnh.length===0);if(!arquivos.cnh.length)ok=false;
+    setErro('comp',arquivos.comp.length===0);if(!arquivos.comp.length)ok=false;
+    return ok;}
+
+  function uuid(){return (crypto.randomUUID?crypto.randomUUID():'id-'+Date.now()+'-'+Math.random().toString(16).slice(2));}
+
+  // ── ENVIO ── conversão só dispara DEPOIS de validar + confirmar sucesso ──
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(!valida()){                          // FALTA CAMPO/DOC -> NÃO conta conversão
+      var primeiro=form.querySelector('.invalid');if(primeiro)primeiro.scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+    var btn=document.getElementById('btnEnviar');btn.disabled=true;btn.textContent='Enviando…';
+    var eid=uuid();document.getElementById('event_id').value=eid;
+
+    // monta o payload que iria pro endpoint (Quaks -> cria card no Pipefy)
+    var payload={
+      nome:document.getElementById('nome').value.trim(), cpf:cpf.value, whatsapp:wh.value,
+      email:document.getElementById('email').value.trim(),
+      indicado:(form.querySelector('input[name=indicado]:checked')||{}).value,
+      event_id:eid, gclid:document.getElementById('gclid').value, fbclid:document.getElementById('fbclid').value,
+      arquivos:{cnh:arquivos.cnh.map(f=>f.name),comprovante:arquivos.comp.map(f=>f.name)}, lp:'combustao'
+    };
+
+    // === MOCK do endpoint (simula Quaks criando o card no Pipefy) ===
+    // Quando o endpoint existir, troca por: fetch('/api/public/lead',{method:'POST',body:FormData}).then(...)
+    enviarMock(payload).then(function(resp){
+      if(resp&&resp.ok){
+        dispararConversao(eid, payload);     // SÓ AQUI conta como conversão
+        document.getElementById('passo-form').hidden=true;
+        var dbg=document.getElementById('debug');
+        dbg.innerHTML='<b>✅ Conversão "Lead" disparada (teste)</b><br>event_id: '+eid+'<br>card Pipefy: '+resp.cardId+' (simulado)<br>Meta Pixel: fbq(track,Lead) ✓<br>dataLayer: lead_submit ✓';
+        document.getElementById('passo-sucesso').hidden=false;
+      } else {
+        btn.disabled=false;btn.textContent='Enviar';
+        alert('Não consegui enviar agora. Tente de novo. (NENHUMA conversão foi contada.)');
+      }
+    });
+  });
+
+  function enviarMock(p){return new Promise(function(res){setTimeout(function(){
+    console.log('[TESTE] enviaria pro endpoint:',p);res({ok:true,cardId:'CARD-'+Math.floor(Math.random()*99999)});},1200);});}
+
+  function dispararConversao(eid,p){
+    try{ if(window.fbq) fbq('track','Lead',{content_name:p.lp,content_category:'pre_cadastro'},{eventID:eid}); }catch(e){}
+    try{ (window.dataLayer=window.dataLayer||[]).push({event:'lead_submit',lp:p.lp,event_id:eid}); }catch(e){}
+  }
+})();
+</script>
+</body>
+</html>
