@@ -254,7 +254,7 @@ fbq('init','544750160682227');fbq('track','PageView');
         dispararConversao(eid, payload);     // SÓ AQUI conta como conversão
         document.getElementById('passo-form').hidden=true;
         var dbg=document.getElementById('debug');
-        dbg.innerHTML='<b>✅ Conversão "Lead" disparada (teste)</b><br>event_id: '+eid+'<br>card Pipefy: '+resp.cardId+' (simulado)<br>Meta Pixel: fbq(track,Lead) ✓<br>dataLayer: lead_submit ✓';
+        dbg.innerHTML='<b>✅ Conversão disparada (teste)</b><br>event_id: '+eid+'<br>card Pipefy: '+resp.cardId+' (simulado)<br>Meta — nativo: fbq(track,Lead) ✓<br>Meta — personalizado: fbq(trackCustom,'+nomeEvento(payload.lp)+') ✓<br>dataLayer: lead_submit ✓';
         document.getElementById('passo-sucesso').hidden=false;
       } else {
         btn.disabled=false;btn.textContent='Enviar';
@@ -266,9 +266,19 @@ fbq('init','544750160682227');fbq('track','PageView');
   function enviarMock(p){return new Promise(function(res){setTimeout(function(){
     console.log('[TESTE] enviaria pro endpoint:',p);res({ok:true,cardId:'CARD-'+Math.floor(Math.random()*99999)});},1200);});}
 
+  // nome do evento PERSONALIZADO por LP (fácil de editar). É o que diferencia
+  // lead de uma LP da outra na Meta (Eventos / Conversões personalizadas).
+  var EVENTO_LP={combustao:'LeadCombustao', eletrico:'LeadEletrico'};
+  function nomeEvento(lp){return EVENTO_LP[lp]||'LeadConcept';}
+
   function dispararConversao(eid,p){
-    try{ if(window.fbq) fbq('track','Lead',{content_name:p.lp,content_category:'pre_cadastro'},{eventID:eid}); }catch(e){}
-    try{ (window.dataLayer=window.dataLayer||[]).push({event:'lead_submit',lp:p.lp,event_id:eid}); }catch(e){}
+    var perso=nomeEvento(p.lp);
+    var dados={content_name:p.lp,content_category:'pre_cadastro',lp:p.lp};
+    try{ if(window.fbq){
+      fbq('track','Lead',dados,{eventID:eid});            // 1) evento NATIVO (agrega todas as LPs)
+      fbq('trackCustom',perso,dados,{eventID:eid});       // 2) evento PERSONALIZADO por LP — mesmo instante, mesmo event_id
+    }}catch(e){}
+    try{ (window.dataLayer=window.dataLayer||[]).push({event:'lead_submit',lp:p.lp,evento_meta:perso,event_id:eid}); }catch(e){}
   }
 })();
 </script>
