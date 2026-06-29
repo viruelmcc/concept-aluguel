@@ -70,7 +70,7 @@ fbq('init','544750160682227');fbq('track','PageView');
 </style>
 </head>
 <body>
-<div class="teste-banner">⚠️ MODO TESTE — não está plugado nas LPs de produção. O envio é SIMULADO (ainda não cria card no Pipefy). A conversão dispara de verdade no Pixel pra você validar.</div>
+<div class="teste-banner">⚠️ MODO TESTE — não está nas LPs de produção. O envio agora é REAL: cria card no Pipefy "Pré Cadastro" e dispara a conversão no Pixel. Use dados de teste e apague o card depois.</div>
 
 <div class="demo">
   <h1>Bora rodar hoje</h1>
@@ -264,10 +264,9 @@ fbq('init','544750160682227');fbq('track','PageView');
     });
   });
 
-  // Endpoint real do Quaks. VAZIO = modo mock (simula sucesso, NÃO cria card).
-  // Pra testar de verdade, cole a URL completa com a ?key= (gerada no Quaks):
-  //   var LEAD_ENDPOINT='https://quaks.com.br/api/public/lead/<slug>?key=<chave>';
-  var LEAD_ENDPOINT='';
+  // Endpoint real do Quaks (cria card no Pipefy "Pré Cadastro" da Concept).
+  // VAZIO = modo mock. Com URL = envio real.
+  var LEAD_ENDPOINT='https://quaks.com.br/api/public/lead/paula-casagrande?key=aa5243d8a2a3955ff6d712d55e4c9ee8e477964c1c6b2fc3';
 
   function enviarLead(p){
     if(!LEAD_ENDPOINT) return enviarMock(p);
