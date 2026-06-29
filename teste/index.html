@@ -152,6 +152,7 @@ fbq('init','544750160682227');fbq('track','PageView');
         </div>
 
         <input type="hidden" id="gclid"><input type="hidden" id="fbclid"><input type="hidden" id="event_id">
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
         <button type="submit" class="btn enviar" id="btnEnviar">Enviar</button>
         <p class="nota">Nunca envie senhas ou dados confidenciais. Este formulário é da Locadora Concept (CNPJ 35.015.925/0001-90).</p>
       </form>
@@ -247,14 +248,14 @@ fbq('init','544750160682227');fbq('track','PageView');
       arquivos:{cnh:arquivos.cnh.map(f=>f.name),comprovante:arquivos.comp.map(f=>f.name)}, lp:'combustao'
     };
 
-    // === MOCK do endpoint (simula Quaks criando o card no Pipefy) ===
-    // Quando o endpoint existir, troca por: fetch('/api/public/lead',{method:'POST',body:FormData}).then(...)
-    enviarMock(payload).then(function(resp){
+    // Envia (endpoint real do Quaks OU mock). Só conta conversão no sucesso.
+    enviarLead(payload).then(function(resp){
       if(resp&&resp.ok){
         dispararConversao(eid, payload);     // SÓ AQUI conta como conversão
         document.getElementById('passo-form').hidden=true;
+        var modo=LEAD_ENDPOINT?'real':'simulado';
         var dbg=document.getElementById('debug');
-        dbg.innerHTML='<b>✅ Conversão disparada (teste)</b><br>event_id: '+eid+'<br>card Pipefy: '+resp.cardId+' (simulado)<br>Meta — nativo: fbq(track,Lead) ✓<br>Meta — personalizado: fbq(trackCustom,'+nomeEvento(payload.lp)+') ✓<br>dataLayer: lead_submit ✓';
+        dbg.innerHTML='<b>✅ Conversão disparada (teste)</b><br>event_id: '+eid+'<br>card Pipefy: '+(resp.cardId||'(sem id)')+' ('+modo+')<br>Meta — nativo: fbq(track,Lead) ✓<br>Meta — personalizado: fbq(trackCustom,'+nomeEvento(payload.lp)+') ✓<br>dataLayer: lead_submit ✓';
         document.getElementById('passo-sucesso').hidden=false;
       } else {
         btn.disabled=false;btn.textContent='Enviar';
@@ -262,6 +263,25 @@ fbq('init','544750160682227');fbq('track','PageView');
       }
     });
   });
+
+  // Endpoint real do Quaks. VAZIO = modo mock (simula sucesso, NÃO cria card).
+  // Pra testar de verdade, cole a URL completa com a ?key= (gerada no Quaks):
+  //   var LEAD_ENDPOINT='https://quaks.com.br/api/public/lead/<slug>?key=<chave>';
+  var LEAD_ENDPOINT='';
+
+  function enviarLead(p){
+    if(!LEAD_ENDPOINT) return enviarMock(p);
+    var fd=new FormData();
+    ['nome','cpf','whatsapp','email','indicado','lp','event_id','gclid','fbclid'].forEach(function(k){
+      if(p[k]!=null && p[k]!=='') fd.append(k,p[k]);
+    });
+    fd.append('website',(document.getElementById('website')||{value:''}).value); // honeypot
+    arquivos.cnh.forEach(function(f){ fd.append('cnh',f,f.name); });
+    arquivos.comp.forEach(function(f){ fd.append('comprovante',f,f.name); });
+    return fetch(LEAD_ENDPOINT,{method:'POST',body:fd})
+      .then(function(r){ return r.json().catch(function(){return {ok:false};}); })
+      .catch(function(){ return {ok:false}; });
+  }
 
   function enviarMock(p){return new Promise(function(res){setTimeout(function(){
     console.log('[TESTE] enviaria pro endpoint:',p);res({ok:true,cardId:'CARD-'+Math.floor(Math.random()*99999)});},1200);});}
